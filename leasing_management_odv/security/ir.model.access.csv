@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_leasing_unit_user,access.leasing.unit.user,model_leasing_unit,leasing_management_odv.group_leasing_user,1,1,1,0
+access_leasing_unit_manager,access.leasing.unit.manager,model_leasing_unit,leasing_management_odv.group_leasing_manager,1,1,1,1
+access_leasing_contract_user,access.leasing.contract.user,model_leasing_contract,leasing_management_odv.group_leasing_user,1,1,1,0
+access_leasing_contract_manager,access.leasing.contract.manager,model_leasing_contract,leasing_management_odv.group_leasing_manager,1,1,1,1
+access_leasing_utility_meter_user,access.leasing.utility.meter.user,model_leasing_utility_meter,leasing_management_odv.group_leasing_user,1,1,1,0
+access_leasing_utility_meter_manager,access.leasing.utility.meter.manager,model_leasing_utility_meter,leasing_management_odv.group_leasing_manager,1,1,1,1
+access_leasing_utility_reading_user,access.leasing.utility.reading.user,model_leasing_utility_reading,leasing_management_odv.group_leasing_user,1,1,1,0
+access_leasing_utility_reading_manager,access.leasing.utility.reading.manager,model_leasing_utility_reading,leasing_management_odv.group_leasing_manager,1,1,1,1
+access_leasing_maintenance_request_user,access.leasing.maintenance.request.user,model_leasing_maintenance_request,leasing_management_odv.group_leasing_user,1,1,1,0
+access_leasing_maintenance_request_manager,access.leasing.maintenance.request.manager,model_leasing_maintenance_request,leasing_management_odv.group_leasing_manager,1,1,1,1
+access_leasing_maintenance_request_portal,access.leasing.maintenance.request.portal,model_leasing_maintenance_request,base.group_portal,1,1,1,0
+access_leasing_soa_wizard_user,access.leasing.soa.wizard.user,model_leasing_statement_of_account_wizard,base.group_user,1,1,1,1
+access_leasing_soa_wizard_line_user,access.leasing.soa.wizard.line.user,model_leasing_statement_of_account_wizard_line,base.group_user,1,1,1,1

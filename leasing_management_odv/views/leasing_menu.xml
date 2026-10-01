@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_leasing_root" name="Leasing" sequence="10" groups="leasing_management_odv.group_leasing_user"/>
+
+    <menuitem id="menu_leasing_configuration" name="Configuration" parent="menu_leasing_root" sequence="90" groups="leasing_management_odv.group_leasing_manager"/>
+
+    <menuitem id="menu_leasing_units" name="Units" parent="menu_leasing_root" action="action_leasing_unit" sequence="10"/>
+    <menuitem id="menu_leasing_contracts" name="Contracts" parent="menu_leasing_root" action="action_leasing_contract" sequence="20"/>
+    <menuitem id="menu_leasing_utility_meters" name="Utility Meters" parent="menu_leasing_root" action="action_leasing_utility_meter" sequence="30"/>
+    <menuitem id="menu_leasing_utility_readings" name="Utility Readings" parent="menu_leasing_root" action="action_leasing_utility_reading" sequence="40"/>
+    <menuitem id="menu_leasing_maintenance_requests" name="Maintenance Requests" parent="menu_leasing_root" action="action_leasing_maintenance_request" sequence="50"/>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_leasing_statement_of_account_wizard_form" model="ir.ui.view">
+        <field name="name">leasing.statement.of.account.wizard.form</field>
+        <field name="model">leasing.statement.of.account.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Statement of Account">
+                <group>
+                    <group>
+                        <field name="contract_id" readonly="1"/>
+                        <field name="statement_date"/>
+                    </group>
+                </group>
+                <group string="Invoice Selection">
+                    <field name="line_ids">
+                        <list create="0" delete="0">
+                            <field name="invoice_id" readonly="1"/>
+                            <field name="lease_invoice_type" readonly="1"/>
+                            <field name="invoice_date" readonly="1"/>
+                            <field name="invoice_date_due" readonly="1"/>
+                            <field name="amount_total" readonly="1"/>
+                            <field name="amount_residual" readonly="1"/>
+                            <field name="payment_state" readonly="1"/>
+                        </list>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_print_statement" type="object" string="Print Statement" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_leasing_statement_of_account_wizard" model="ir.actions.act_window">
+        <field name="name">Statement of Account</field>
+        <field name="res_model">leasing.statement.of.account.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_leasing_statement_of_account_wizard_form"/>
+    </record>
+</odoo>

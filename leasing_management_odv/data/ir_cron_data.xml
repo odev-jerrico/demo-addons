@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_generate_monthly_soa" model="ir.cron">
+        <field name="name">Leasing: Generate Monthly SOA</field>
+        <field name="model_id" ref="model_leasing_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_monthly_soa()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

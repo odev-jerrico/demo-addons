@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_leasing_unit_list" model="ir.ui.view">
+        <field name="name">leasing.unit.list</field>
+        <field name="model">leasing.unit</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="floor"/>
+                <field name="area_sqm"/>
+                <field name="base_rent"/>
+                <field name="service_charge"/>
+                <field name="tenant_id"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_leasing_unit_form" model="ir.ui.view">
+        <field name="name">leasing.unit.form</field>
+        <field name="model">leasing.unit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_available" type="object" string="Mark Available"/>
+                    <button name="action_mark_maintenance" type="object" string="Mark Maintenance"/>
+                    <button name="action_mark_inactive" type="object" string="Mark Inactive"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,available,occupied,maintenance,inactive"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="floor"/>
+                        </group>
+                        <group>
+                            <field name="area_sqm"/>
+                            <field name="base_rent"/>
+                            <field name="service_charge"/>
+                            <field name="tenant_id" readonly="1"/>
+                            <field name="active_contract_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Utility Meters">
+                            <field name="meter_ids" context="{'default_company_id': company_id, 'default_unit_id': id}">
+                                <list editable="bottom">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="meter_type"/>
+                                    <field name="unit_of_measure"/>
+                                    <field name="rate"/>
+                                    <field name="active"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="code"/>
+                                            <field name="name"/>
+                                            <field name="meter_type"/>
+                                        </group>
+                                        <group>
+                                            <field name="unit_of_measure"/>
+                                            <field name="rate"/>
+                                            <field name="active"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Contracts">
+                            <field name="contract_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="tenant_id"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_leasing_unit" model="ir.actions.act_window">
+        <field name="name">Leasing Units</field>
+        <field name="res_model">leasing.unit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

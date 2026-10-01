@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_out_invoice_tree_leasing_contract" model="ir.ui.view">
+        <field name="name">account.out.invoice.list.leasing.contract</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_date_due']" position="after">
+                <field name="lease_invoice_type" string="Lease Invoice Type" optional="show" column_invisible="not context.get('show_lease_invoice_type')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_leasing_contract_list" model="ir.ui.view">
+        <field name="name">leasing.contract.list</field>
+        <field name="model">leasing.contract</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="tenant_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="rent_amount"/>
+                <field name="state"/>
+                <field name="next_invoice_date"/>
+                <field name="deposit_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_leasing_contract_form" model="ir.ui.view">
+        <field name="name">leasing.contract.form</field>
+        <field name="model">leasing.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_statement_of_account_wizard" type="object" string="Print SOA" class="btn-secondary"/>
+                    <button name="action_generate_rent_schedule" type="object" string="Generate Rent Schedule" invisible="state != 'draft'"/>
+                    <button name="action_activate" type="object" string="Activate" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_post_due_invoices" type="object" string="Post Due Invoices" invisible="state != 'active'"/>
+                    <button name="action_generate_security_deposit_invoice" type="object" string="Generate Deposit Invoice" invisible="deposit_status != 'not_invoiced'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state != 'active'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ('draft','active')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" name="action_view_invoices" icon="fa-file-text-o">
+                            <field name="invoice_count" string="Invoices" widget="statinfo"/>
+                        </button>
+                        <button type="object" class="oe_stat_button" name="action_view_meter_readings" icon="fa-tachometer">
+                            <field name="meter_reading_count" string="Meter Readings" widget="statinfo"/>
+                        </button>
+                        <button type="object" class="oe_stat_button" name="action_view_maintenance_requests" icon="fa-wrench">
+                            <field name="maintenance_request_count" string="Maintenance Requests" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="unit_id" options="{'no_create_edit': True}"/>
+                            <field name="tenant_id"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="billing_day"/>
+                            <field name="billing_interval"/>
+                            <field name="annual_escalation_rate"/>
+                            <field name="next_invoice_date" readonly="1"/>
+                            <field name="last_invoice_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Commercial Terms">
+                        <group>
+                            <field name="rent_amount"/>
+                            <field name="service_charge_amount"/>
+                        </group>
+                        <group>
+                            <field name="security_deposit_amount"/>
+                            <field name="advance_deposit_amount"/>
+                            <field name="deposit_status" readonly="1"/>
+                            <field name="deposit_invoice_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Billing Summary">
+                        <group>
+                            <field name="total_contract_value" readonly="1"/>
+                            <field name="collected_to_date" readonly="1"/>
+                            <field name="future_contracted_income" readonly="1"/>
+                            <field name="outstanding_overdue" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="total_invoiced" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Invoices">
+                            <field name="invoice_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="lease_invoice_type"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount_total"/>
+                                    <field name="state"/>
+                                    <field name="payment_state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Payments">
+                            <field name="payment_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="partner_id"/>
+                                    <field name="journal_id"/>
+                                    <field name="amount"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Meter Readings">
+                            <field name="meter_reading_ids" context="{'default_contract_id': id, 'default_unit_id': unit_id}">
+                                <list editable="bottom">
+                                    <field name="reading_date"/>
+                                    <field name="meter_id" domain="[('unit_id', '=', parent.unit_id)]" readonly="billed"/>
+                                    <field name="unit_id" readonly="1"/>
+                                    <field name="previous_reading" readonly="billed"/>
+                                    <field name="current_reading" readonly="billed"/>
+                                    <field name="consumption"/>
+                                    <field name="rate_snapshot" readonly="billed"/>
+                                    <field name="amount"/>
+                                    <field name="billed"/>
+                                    <field name="invoice_id"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="reading_date" readonly="billed"/>
+                                            <field name="meter_id" domain="[('unit_id', '=', parent.unit_id)]" readonly="billed"/>
+                                            <field name="unit_id" readonly="1"/>
+                                            <field name="contract_id" readonly="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="previous_reading" readonly="billed"/>
+                                            <field name="current_reading" readonly="billed"/>
+                                            <field name="consumption" readonly="1"/>
+                                            <field name="rate_snapshot" readonly="billed"/>
+                                            <field name="amount" readonly="1"/>
+                                        </group>
+                                    </group>
+                                    <group>
+                                        <field name="billed" readonly="1"/>
+                                        <field name="invoice_id" readonly="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_leasing_contract" model="ir.actions.act_window">
+        <field name="name">Leasing Contracts</field>
+        <field name="res_model">leasing.contract</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

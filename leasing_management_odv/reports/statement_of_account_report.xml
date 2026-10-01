@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_leasing_statement_of_account" model="ir.actions.report">
+        <field name="name">Leasing Statement of Account</field>
+        <field name="model">leasing.statement.of.account.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">leasing_management_odv.report_leasing_statement_of_account_document</field>
+        <field name="report_file">leasing_management_odv.report_leasing_statement_of_account_document</field>
+        <field name="print_report_name">'SOA - %s' % (object.contract_id.name)</field>
+        <field name="binding_model_id" ref="model_leasing_statement_of_account_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_leasing_statement_of_account_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wiz">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Statement of Account</h2>
+                        <p>
+                            <strong>Contract:</strong>
+                            <span t-esc="wiz.contract_id.name"/>
+                            <br/>
+                            <strong>Tenant:</strong>
+                            <span t-esc="wiz.contract_id.tenant_id.display_name"/>
+                            <br/>
+                            <strong>Unit:</strong>
+                            <span t-esc="wiz.contract_id.unit_id.display_name"/>
+                            <br/>
+                            <strong>Statement Date:</strong>
+                            <span t-esc="wiz.statement_date"/>
+                        </p>
+
+                        <h3>Selected Invoices</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Invoice</th>
+                                    <th>Type</th>
+                                    <th>Invoice Date</th>
+                                    <th>Due Date</th>
+                                    <th class="text-end">Total</th>
+                                    <th class="text-end">Balance</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="wiz._get_selected_invoices()" t-as="inv">
+                                    <tr>
+                                        <td><span t-esc="inv.name"/></td>
+                                        <td><span t-esc="dict(inv._fields['lease_invoice_type'].selection).get(inv.lease_invoice_type, inv.lease_invoice_type)"/></td>
+                                        <td><span t-esc="inv.invoice_date"/></td>
+                                        <td><span t-esc="inv.invoice_date_due or ''"/></td>
+                                        <td class="text-end"><span t-esc="inv.amount_total" t-options="{'widget': 'monetary', 'display_currency': inv.currency_id}"/></td>
+                                        <td class="text-end"><span t-esc="inv.amount_residual" t-options="{'widget': 'monetary', 'display_currency': inv.currency_id}"/></td>
+                                        <td><span t-esc="inv.payment_state"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" style="padding: 0;">
+                                            <table class="table table-sm mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Description</th>
+                                                        <th class="text-end">Qty</th>
+                                                        <th class="text-end">Unit Price</th>
+                                                        <th class="text-end">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="inv.invoice_line_ids" t-as="line">
+                                                        <tr>
+                                                            <td><span t-esc="line.name"/></td>
+                                                            <td class="text-end"><span t-esc="line.quantity"/></td>
+                                                            <td class="text-end"><span t-esc="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': inv.currency_id}"/></td>
+                                                            <td class="text-end"><span t-esc="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': inv.currency_id}"/></td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <h3>Meter Readings and Consumption</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Meter</th>
+                                    <th>Type</th>
+                                    <th class="text-end">Previous</th>
+                                    <th class="text-end">Current</th>
+                                    <th class="text-end">Consumption</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="readings" t-value="wiz._get_report_meter_readings()"/>
+                                <t t-if="readings">
+                                    <t t-foreach="readings" t-as="reading">
+                                        <tr>
+                                            <td><span t-esc="reading.reading_date"/></td>
+                                            <td><span t-esc="reading.meter_id.display_name"/></td>
+                                            <td><span t-esc="dict(reading.meter_id._fields['meter_type'].selection).get(reading.meter_id.meter_type, reading.meter_id.meter_type)"/></td>
+                                            <td class="text-end"><span t-esc="reading.previous_reading"/></td>
+                                            <td class="text-end"><span t-esc="reading.current_reading"/></td>
+                                            <td class="text-end"><span t-esc="reading.consumption"/></td>
+                                            <td class="text-end"><span t-esc="reading.rate_snapshot" t-options="{'widget': 'monetary', 'display_currency': reading.currency_id}"/></td>
+                                            <td class="text-end"><span t-esc="reading.amount" t-options="{'widget': 'monetary', 'display_currency': reading.currency_id}"/></td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No meter readings found for selected invoices.</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

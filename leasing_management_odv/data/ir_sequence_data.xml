@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_leasing_contract" model="ir.sequence">
+        <field name="name">Leasing Contract</field>
+        <field name="code">leasing.contract</field>
+        <field name="prefix">LEASE/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_leasing_maintenance_request" model="ir.sequence">
+        <field name="name">Leasing Maintenance Request</field>
+        <field name="code">leasing.maintenance.request</field>
+        <field name="prefix">MREQ/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

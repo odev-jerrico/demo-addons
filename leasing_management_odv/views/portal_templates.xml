@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_leasing" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/account/static/src/img/bank.svg'"/>
+                <t t-set="title">My Maintenance Requests</t>
+                <t t-set="url" t-value="'/my/leasing/maintenance'"/>
+                <t t-set="text">Track the status and history of your submitted requests</t>
+                <t t-set="placeholder_count" t-value="'maintenance_count'"/>
+                <t t-set="count" t-value="maintenance_count or 0"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_maintenance_requests" name="Portal My Maintenance Requests">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_wrap">
+                <h3>My Maintenance Requests</h3>
+                <a href="/my/leasing/maintenance/new" class="btn btn-primary mb-3">New Request</a>
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="requests" t-as="item">
+                            <tr>
+                                <td><a t-attf-href="/my/leasing/maintenance/{{ item.id }}"><t t-esc="item.name"/></a></td>
+                                <td><t t-esc="item.request_date"/></td>
+                                <td><t t-esc="item.unit_id.display_name"/></td>
+                                <td><t t-esc="item.priority"/></td>
+                                <td><t t-esc="item.state"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_new_maintenance_request" name="Portal New Maintenance Request">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_wrap">
+                <h3>New Maintenance Request</h3>
+                <t t-if="error">
+                    <div class="alert alert-danger" role="alert"><t t-esc="error"/></div>
+                </t>
+                <form action="/my/leasing/maintenance/new" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="mb-3">
+                        <label class="form-label">Unit</label>
+                        <select class="form-select" name="unit_id" required="required">
+                            <option value="">Select Unit</option>
+                            <t t-foreach="units" t-as="unit">
+                                <option t-att-value="unit.id"><t t-esc="unit.display_name"/></option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" name="priority">
+                            <option value="0">Low</option>
+                            <option value="1" selected="selected">Normal</option>
+                            <option value="2">High</option>
+                            <option value="3">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" rows="5" name="description" required="required"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_maintenance_request_detail" name="Portal Maintenance Request Detail">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_wrap">
+                <h3><t t-esc="maintenance.name"/></h3>
+                <p><strong>Date:</strong> <t t-esc="maintenance.request_date"/></p>
+                <p><strong>Unit:</strong> <t t-esc="maintenance.unit_id.display_name"/></p>
+                <p><strong>Priority:</strong> <t t-esc="maintenance.priority"/></p>
+                <p><strong>Status:</strong> <t t-esc="maintenance.state"/></p>
+                <p><strong>Description:</strong></p>
+                <p><t t-esc="maintenance.description"/></p>
+                <t t-if="maintenance.resolution_notes">
+                    <p><strong>Resolution:</strong></p>
+                    <p><t t-esc="maintenance.resolution_notes"/></p>
+                </t>
+                <a href="/my/leasing/maintenance" class="btn btn-secondary">Back</a>
+            </div>
+        </t>
+    </template>
+</odoo>
