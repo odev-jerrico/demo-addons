@@ -34,15 +34,6 @@ class SaleOrder(models.Model):
         for order in self:
             order.split_sale_order_count = len(order.split_sale_order_ids)
 
-    def _company_mismatch_lines(self):
-        self.ensure_one()
-        return self.order_line.filtered(
-            lambda line: line.product_id
-            and not line.display_type
-            and not line.is_downpayment
-            and line.product_id.product_tmpl_id.owning_company_id != self.company_id
-        )
-
     def _owning_company_errors(self):
         self.ensure_one()
         missing = self.order_line.filtered(
@@ -52,16 +43,10 @@ class SaleOrder(models.Model):
             and not line.product_id.product_tmpl_id.owning_company_id
         )
         if missing:
-            return _(
-                "Every product on sales order %s must have an Owning Company."
-            ) % self.display_name
-        mismatch = self._company_mismatch_lines() if not self.company_assignment_override else self.env["sale.order.line"]
-        if mismatch:
-            companies = ", ".join(mismatch.mapped("product_id.product_tmpl_id.owning_company_id.name"))
-            return _(
-                "Sales order %s contains products owned by another company (%s). "
-                "Correct the lines or split the sales order before confirming it."
-            ) % (self.display_name, companies)
+            return (
+                _("Every product on sales order %s must have an Owning Company.")
+                % self.display_name
+            )
         return False
 
     def action_confirm(self):
