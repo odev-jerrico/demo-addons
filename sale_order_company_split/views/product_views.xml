@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_form_view_inherit_company" model="ir.ui.view">
+        <field name="name">product.category.form.inherit.company</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="default_owning_company_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_form_view_inherit_company" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.company</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="brand_id"/>
+                <field name="owning_company_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_product_form_view_inherit_company" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.company</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="brand_id"/>
+                <field name="owning_company_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

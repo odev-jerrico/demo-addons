@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_split_wizard_user,sale.order.split.wizard user,model_sale_order_split_wizard,sales_team.group_sale_salesman,1,1,1,1
+access_sale_order_split_detail_user,sale.order.split.detail user,model_sale_order_split_detail,sales_team.group_sale_salesman,1,1,1,1
+access_product_brand_user,product.brand user,model_product_brand,sales_team.group_sale_salesman,1,1,1,1
